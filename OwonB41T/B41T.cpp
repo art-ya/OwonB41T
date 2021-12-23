@@ -288,13 +288,18 @@ concurrency::task<bool> B41T::getCharacteristic(winrt::guid uid, winrt::Windows:
 }
 
 
+
 void B41T::handlePacket(std::vector<uint8_t> pak) {
 		// TODO: add a lock here to ensure packets are always handled in order, even in circumstances I have not encountered
 	if (options.rawOutput) {
-		for (const auto& e : pak)
+		for (const auto& e : pak) {
+			//std::cout << "I am here" << std::endl;
 			std::cout << e;
+		}
 		return;
 	}
+	
+	//std::cout << "I am here 1" << std::endl;
 	packets << std::move(pak);
 
 	if (packets.isDownloading()) {
@@ -309,13 +314,32 @@ void B41T::handlePacket(std::vector<uint8_t> pak) {
 	} else {
 		data_parser dp(packets.getPrevious());
 		if (dp.isValidFromData()) {
+
+
+			//time_t rawtime;
+			//struct tm timeinfo;
+
+			//time(&rawtime);                               // получить текущую дату, выраженную в секундах
+			//localtime_s(&timeinfo, &rawtime);
+			//char buffer[80];                                // строка, в которой будет храниться текущее время
+
+			//strftime(buffer, 80, "%F %T", &timeinfo); // форматируем строку времени
+
+
+			std::ofstream csvfile("B41T_log.csv", std::ofstream::app);
+
 			std::cout << dp.formattedString() << std::endl;
+			csvfile << dp.csvString() << std::endl;
+
+			csvfile.close();
+			//std::cout << "I am here 2" << std::endl;
 		} else {
 			std::cerr << "BAD DATA PASSED TO PARSER" << std::endl;
 		}
 	}
 
 }
+
 
 
 

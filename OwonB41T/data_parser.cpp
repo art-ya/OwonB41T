@@ -121,20 +121,58 @@ std::string data_parser::formattedString() const {
 	if (!isValid())
 		return "Invalid data passed to parser";
 
+
 	std::string toret(measurementString());;
 	toret += '\t';
 	toret += scaleChar();
 	toret += ' ';
 	toret += funcString();
-	if (isFromData()) {
-		toret += '\t';
-		toret += statusString();
+	//if (isFromData()) {
+	//	toret += '\t';
+	//	toret += statusString();
 
 
-		// TODO: Remove this
-		toret += '\t';	toret += hexString();
-	}
+	//	// TODO: Remove this
+	//	toret += '\t';	toret += hexString();
+	//}
 	return toret;
 }
 
+uint64_t timeSinceEpochMillisec() {
+	using namespace std::chrono;
+	return duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+}
+
+uint64_t Millisec() {
+	return timeSinceEpochMillisec() % 1000;
+}
+
+
+std::string data_parser::csvString() const {
+	if (!isValid())
+		return "Invalid data passed to parser";
+
+	time_t rawtime;
+	struct tm timeinfo;
+
+	time(&rawtime);                               // получить текущую дату, выраженную в секундах
+	localtime_s(&timeinfo, &rawtime);
+	char buffer[80];                                // строка, в которой будет храниться текущее время
+
+	strftime(buffer, 80, "%Y-%m-%d;%H:%M:%S", &timeinfo); // форматируем строку времени
+	std::ostringstream sstream;
+	sstream << Millisec()<< ";" << decimalValue();
+
+
+	std::string toret(buffer);
+	toret += ';';
+	toret += sstream.str();
+	toret += ';';
+	toret += scaleChar();
+	toret += ';';
+	toret += funcString();
+	toret += ';';
+
+	return toret;
+}
 

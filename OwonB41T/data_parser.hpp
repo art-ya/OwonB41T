@@ -175,7 +175,9 @@ public:
 
 	std::string formattedString() const;   // get a nice human-readable string of the parsed data
 
+	std::string csvString() const;
 
+	
 	std::string hexString() const;
 
 

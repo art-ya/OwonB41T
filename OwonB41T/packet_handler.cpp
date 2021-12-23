@@ -104,6 +104,8 @@ void downloaded_data::print() const {
   for (auto&& r : readings) {
     auto d = dp.parseReading(r);
     // TODO: very innefficient. do better.
+    //std::cout << "I am here" << std::endl;
+
     std::cout << offline_prefix << header.timeString(i++ * header.interval) << '\t' << d.formattedString() << std::endl;
   }
 }
